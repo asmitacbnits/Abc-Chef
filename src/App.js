@@ -1,16 +1,18 @@
 import React from 'react';
-import { Switch, Route, } from "react-router-dom";
 import './assets/css/style.css';
-import Header from './components/common/Header';
-import Footer from './components/common/Footer';
-import Router from './Router'
+//import Header from './components/common/Header';
+//import Footer from './components/common/Footer';
+import Router from './Router';
+import 'react-toastify/dist/ReactToastify.css';
+import {ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <React.Fragment>
-      <Header />
+      {/* <Header /> */}
+      <ToastContainer autoClose={2000} />
       <Router />
-      <Footer />
+      {/* <Footer /> */}
     </React.Fragment>
   );
 }
