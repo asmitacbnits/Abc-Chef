@@ -1,10 +1,75 @@
-import React from 'react';
+import React ,{useState} from 'react';
+import { useForm } from "react-hook-form";
 import { ImagePath } from '../../../ImagePath';
-import { Container, Row, Col,} from 'reactstrap';
-import { NavLink } from "react-router-dom";
+import { Container, Row, Col,Form} from 'reactstrap';
+//import { NavLink } from "react-router-dom";
 import SingelBanner from '../SingelBanner';
+import InputUI from "../../../UI/InputUI";
+import {CHEFCREATE_URL} from "../../../API/Helper/allApiUrl";
+import {axiosApiCall} from "../../../API/index";
+import { toast  } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import history from '../../../history';
+const ChefSignupStepOne = (props) =>{
+  const initialFields = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    confirmEmail: "",
+    password: "",
+    confirmPassword:"",
+    userType: "chef",
+   
+  };
+  const { handleSubmit, register, errors,formState } = useForm({
+    mode: "onChange"
+  });
+  const [fields, setFields] = useState(initialFields);
+  const [errorMsgPassword, setErrorPassword] = useState(false);
+  const [errorMsgEmail, setErrorEmail] = useState(false);
+  const  { touched  } = formState;
+  const onSubmit = async (fromData) => {
 
-const ChefSignupStepOne = () =>{
+    let  {data}  = await axiosApiCall.post(`${CHEFCREATE_URL}/createChef`, fromData);
+                // set token in localStorage
+                const details = data.msg;
+                if(data.ack===true){
+                    history.push('/ChefSignupStepTwo');
+                    toast.info(details, {
+                        position: toast.POSITION.TOP_CENTER
+                    });
+                }else{
+                    toast.error(details, {
+                        position: toast.POSITION.TOP_CENTER
+                    });
+                }
+  
+  };
+
+  const handleChange = (name,value) => {
+     setFields((prevState) => ({ ...prevState, [name]: value }));
+  };
+  
+  const checkPassword = () =>{
+    if(touched.password === true && touched.confirmPassword === true){
+      if(fields.password !== fields.confirmPassword){
+           setErrorPassword(true)
+        return
+      }else{
+        setErrorPassword(false)
+      }
+   }
+}
+const checkEmail = () =>{
+  if(touched.email === true && touched.confirmEmail === true){
+    if(fields.email !== fields.confirmEmail){
+         setErrorEmail(true)
+      return
+    }else{
+      setErrorEmail(false)
+    }
+ }
+}
   return(
     <React.Fragment>
       {/* <div className="singel-banner">
@@ -15,7 +80,7 @@ const ChefSignupStepOne = () =>{
           </Container>
         </div>
       </div> */}
-
+       
       <SingelBanner
         bannerImg={ImagePath.banner4}
         bannerTitle="Start Cooking Now"
@@ -53,20 +118,94 @@ const ChefSignupStepOne = () =>{
           </Col>
           <Col xs={12} sm={12} md={12} lg={5}>
             <div className="formBox">
+            <Form className="form-horizontal" onSubmit={handleSubmit(onSubmit)}>
               <div className="booxInfo">basic info</div>
               <h2>Chef Register New Account</h2>
-              <input type="text" placeholder="First Name" />
-              <input type="text" placeholder="Last Name" />
-              <input type="email" placeholder="Email" />
-              <input type="email" placeholder="Confirm Email" />
-              <input type="Password" placeholder="Password" />
-              <input type="Password" placeholder="Confirm Password" />
+              <InputUI
+                  placeholder="First Name"
+                  name="firstName"
+                  errors={errors}
+                  innerRef={register({
+                    required: "This is required field",
+                  })}
+                  fields={fields}
+                />
+               <InputUI
+                  placeholder="Last Name"
+                  name="lastName"
+                  errors={errors}
+                  innerRef={register({
+                    required: "This is required field",
+                  })}
+                  fields={fields}
+                />
+                <InputUI
+                  placeholder="Email"
+                  type="email"
+                  name="email"
+                  errors={errors}
+                  innerRef={register({
+                    required: "This is required field",
+                  })}
+                  fields={fields}
+                  onChange={(e) =>
+                    handleChange(e.target.name, e.target.value)
+                  }
+                  onBlur={checkEmail}
+                /> 
+                <InputUI
+                  placeholder="Confirm Email"
+                  type="email"
+                  name="confirmEmail"
+                  errors={errors}
+                  innerRef={register({
+                    required: "This is required field",
+                  })}
+                  fields={fields}
+                  onChange={(e) =>
+                    handleChange(e.target.name, e.target.value)
+                  }
+                  onBlur={checkEmail}
+                /> 
+                {errorMsgEmail?<div className="text-danger">{"***Confirm Email does not chnaged"}</div>:''}
+                <InputUI
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  errors={errors}
+                  innerRef={register({
+                    required: "This is required field",
+                  })}
+                  fields={fields}
+                  onChange={(e) =>
+                    handleChange(e.target.name, e.target.value)
+                  }
+                  onBlur={checkPassword}
+
+                /> 
+                <InputUI
+                  type="password"
+                  placeholder="Confirm Password"
+                  name="confirmPassword"
+                  errors={errors}
+                  innerRef={register({
+                    required: "This is required field",
+                  })}
+                  fields={fields}
+                  onChange={(e) =>
+                    handleChange(e.target.name, e.target.value)
+                  }
+                  onBlur={checkPassword}
+
+                /> 
+                {errorMsgPassword?<div className="text-danger">{"***password does not chnaged"}</div>:''}
+             
               {/* button comment out for validation */}
-              {/* <button className="defaualt">Next</button> */}
+              <button className="defaualt" type='submit'>Next</button>
 
               {/* Comment this NavLink remove after validation. */}
-              <NavLink to="/ChefSignupStepTwo" className="defaualt">Next</NavLink>
-              
+              {/* <NavLink to="/ChefSignupStepTwo" className="defaualt">Next</NavLink> */}
+              </Form>
             </div>
           </Col>
         </Row>

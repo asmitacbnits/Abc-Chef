@@ -2,12 +2,14 @@ import React from 'react';
 import { ImagePath } from '../../../ImagePath';
 import { Container, Row, Col } from 'reactstrap';
 import BannerSlider from '../Home/BannerSlider';
-
+//import Header from '../../common/Header';
+//import Footer from '../../common/Footer';
 import { NavLink } from "react-router-dom";
 
 const Home = () =>{
   return(
     <React.Fragment>
+      {/* <Header /> */}
       <div className="banner">
         <BannerSlider />
         <div className="baanerCaption">
@@ -70,7 +72,7 @@ const Home = () =>{
         </Row>
       </Container>
       </div>
-
+   {/* <Footer /> */}
     </React.Fragment>
   )
 }

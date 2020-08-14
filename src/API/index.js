@@ -1,16 +1,16 @@
 import axios from "axios";
 import { apiBaseUrl } from "./Helper/helpers";
-import { toast ,ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAuthToken } from "./Helper/helpers";
 
 const axiosInstance = axios.create({
-  baseURL: apiBaseUrl + "/app/",
+  baseURL: apiBaseUrl + "/web/",
   headers: { Authorization: `Bearer ${getAuthToken}` },
 });
 export default axiosInstance; 
 export const axiosApiCall = axios.create({
-    baseURL: apiBaseUrl + "/app/",
+    baseURL: apiBaseUrl + "/web/",
 });
 export const callApiToken = (url, method, data) => {
   const dataObj = !data
